@@ -1,11 +1,12 @@
-prep_csv <- function(file, 
-                     path_subm = "submissions/",
+prep_csv <- function(submission_file, 
+                     path_to_submissions = "submissions/",
                      max_row = 146,
+                     start_id = 601,
                      verbose = FALSE){
   
-  if (verbose) print(paste0("Now processing: ", file))
+  if (verbose) print(paste0("Now processing: ", submission_file))
   
-  x <- data.table::fread(paste0(path_subm, file), header = TRUE)
+  x <- data.table::fread(paste0(path_to_submissions, submission_file), header = TRUE)
   
   names(x) <- tolower(names(x))
   
@@ -52,7 +53,7 @@ prep_csv <- function(file,
     names(x) <- "pred"
     x <-
       x %>% add_column(
-        id = 251:(251+nrow(x)-1))
+        id = start_id:(start_id+nrow(x)-1))
   }
   
   x$id <- as.integer(x$id)
@@ -68,9 +69,9 @@ prep_csv <- function(file,
                   .fns = as.numeric))
   
   
-  # if id is all NA, set it with the sequence from 251 to max row:
-  if (all(is.na(x$id))) x$id <- 251:(251+nrow(x)-1)
-  if (any(x$id[1:10] != 251:260)) x$id <- 251:(251+nrow(x)-1)
+  # if id is all NA, set it with the sequence from id_start to to (start_id+max_row):
+  if (all(is.na(x$id))) x$id <- start_id:(start_id+nrow(x)-1)
+  if (any(x$id[1:10] != start_id:(start_id+9))) x$id <- start_id:(start_id+nrow(x)-1)
  
   
   # filter max n=`max_row` rows
@@ -79,15 +80,14 @@ prep_csv <- function(file,
     slice(1:max_row)
   
   
-solution_df <- read_csv("/Users/sebastiansaueruser/github-repos/Vorhersagewettbewerb/SoSe_2021/Bachelor-Vorhersagewettbewerb/Vorverarbeitung/Variante-ses/Kontrolldaten.csv", 
+solution_df <- read_csv(solution_df_path, 
                         show_col_types = FALSE)
   
   x_joined <-
     solution_df %>% 
-    select(id, punkte) %>% 
+    select(id, y) %>% 
     left_join(x,
-              by = "id") %>% 
-    rename(lebenszufriedenheit = punkte)
+              by = "id") 
   
   x_joined <-
     x_joined %>%
@@ -95,7 +95,7 @@ solution_df <- read_csv("/Users/sebastiansaueruser/github-repos/Vorhersagewettbe
  
   if (verbose == TRUE) {print("Ncol: "); print(ncol(x_joined))}
   
-  if (verbose) print(paste0("Finished processing: ", file))
+  if (verbose) print(paste0("Finished processing: ", submission_file))
   
   return(x_joined)
 }

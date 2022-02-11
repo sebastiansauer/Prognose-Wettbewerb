@@ -2,22 +2,25 @@ library(tidyverse)
 library(magrittr)
 
 
-raw_path <- "Rohdaten/"
 
-# Parse submssions:
+
+
+# Read submissions:
 submissions_raw <- list.files(path = raw_path,
                           full.names = TRUE,
                           pattern = ".csv$",
                           recursive = TRUE) 
 
-file.copy(submissions_raw, "Submissions")
+file.copy(submissions_raw, subm_path)
 
 
 
 submissions_folders <- list.dirs(path = raw_path,
                                  full.names = FALSE,
-                                 recursive = )
+                                 recursive = T)
 submissions_folders
+
+write_rds(submissions_folders, file = paste0(results_path, "submissions_folders.rds"))
 
 subm_last_names <- 
   submissions_folders %>% 
@@ -27,6 +30,6 @@ subm_last_names <-
 
 subm_last_names
 
-write_rds(subm_last_names, file = "subm_last_names.rds")
+write_rds(subm_last_names, file = paste0(results_path,"subm_last_names.rds"))
 
 

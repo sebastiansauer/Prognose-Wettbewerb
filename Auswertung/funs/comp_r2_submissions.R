@@ -1,10 +1,10 @@
-comp_r2_submissions <- function(subm_path = "Submissions/") {
+comp_error_submissions <- function(path_to_submissions = "Submissions/", error_fun = mae) {
   
   source("funs/parse_names.R")
   source("funs/prep_csv.R")
   
   # Parse submissions:
-  submissions <- list.files(path = subm_path,
+  submissions <- list.files(path = path_to_submissions,
                             full.names = FALSE,
                             pattern = ".csv$",
                             recursive = TRUE) 
@@ -27,7 +27,7 @@ comp_r2_submissions <- function(subm_path = "Submissions/") {
   d2 <-
     d %>% 
     mutate(npreds = map_dbl(submissions,
-                            ~ countLines(paste0(subm_path, .x))))
+                            ~ countLines(paste0(subm_path, .x))) - 1)
   
   
   
@@ -42,6 +42,7 @@ comp_r2_submissions <- function(subm_path = "Submissions/") {
                                           str_c(collapse = " - ")))
   
   
+  #debug(prep_csv)
   # parse prediction data to df:
   if (verbose) print("Now parsing csv files with prediction data.")
   d3 <- 
@@ -49,15 +50,16 @@ comp_r2_submissions <- function(subm_path = "Submissions/") {
     #slice(1) %>% 
     mutate(data = map(
       .x = submissions,
-      .f = ~ prep_csv(file =  .x,
+      .f = ~ prep_csv(submission_file =  .x,
+                      path_to_submissions = subm_path,
                       verbose = TRUE)))
   
   
-  if (verbose) print("Now computing r2.")
+  if (verbose) print("Now computing test set error.")
   d4 <-
     d3 %>% 
-    mutate(r2 = map(data,
-                    ~rsq(truth = lebenszufriedenheit,
+    mutate(error_coef = map(data,
+                    ~error_fun(truth = y,
                          estimate = pred,
                          data = .x))) 
   
@@ -65,7 +67,7 @@ comp_r2_submissions <- function(subm_path = "Submissions/") {
   options(scipen = 4)
   d5 <-
     d4 %>% 
-    mutate(r2_vec = map_dbl(r2,
+    mutate(error_value = map_dbl(error_coef,
                             ".estimate"))
   
   return(d5)

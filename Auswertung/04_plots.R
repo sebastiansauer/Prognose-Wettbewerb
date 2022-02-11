@@ -2,8 +2,10 @@
 library(gt)
 
 
+grades_file_path <- paste0(results_path, "d_grades.rds")
+file.exists(grades_file_path)
 
-d_grades <- read_rds(file = "d_grades.rds")
+d_grades <- read_rds(file = grades_file_path)
 
 grades_p_hist <- 
   d_grades %>% 
@@ -15,8 +17,9 @@ grades_p_hist <-
            y = 1,
            label = paste0("MW: ", numform::round2(mean(d_grades$grade),
                                                   digits = 2))) +
-  labs(title = "Notenverteilung QM1, SoSe 21",
-       caption = paste0("n = ", nrow(d_grades)))
+  labs(title = "Notenverteilung QM1, SoSe 22",
+       caption = paste0("n = ", nrow(d_grades))) +
+  scale_x_continuous(breaks = grades_scheme)
 
 grades_p_hist
 
@@ -30,7 +33,7 @@ grades_p_boxplot <-
   geom_boxplot() +
   geom_jitter(width = 0.1, alpha = .2) +
   scale_x_continuous(labels = NULL, guide = NULL) +
-  labs(title = "Notenverteilung QM1, SoSe 21",
+  labs(title = "Notenverteilung QM1, SoSe 22",
        caption = paste0("n = ", nrow(d_grades)))
 
 grades_p_boxplot
