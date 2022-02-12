@@ -33,11 +33,11 @@ test_df <-
 d_error <- comp_error_submissions(path_to_submissions = subm_path)
 
 #write_rds(x = d_error, file = paste0(results_path,"d_error.rds"))
-
+d_error <- read_rds(file = paste0(results_path,"d_error.rds"))
 
 d_error2 <-
   d_error %>% 
-  select(id, last_name, first_name, matrikelnummer, error_value)
+  select(id, last_name, first_name, matrikelnummer, npreds, error_value)
 
 
 # grading sequence:
@@ -64,5 +64,6 @@ d_grades <-
 #                                  1.3, 1))) %>% 
 #   mutate(grade = as.numeric(as.character(grade_f)))
 
-
-write_rds(d_grades, file = paste0(results_path, "d_grades.rds"))
+#write_csv(d_grades, file = paste0(results_path, "d_grades.rds"))
+#write_rds(d_grades, file = paste0(results_path, "d_grades.rds"))
+#d_grades <- read_rds(file = paste0(results_path, "d_grades.rds"))
