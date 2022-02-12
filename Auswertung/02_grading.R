@@ -32,8 +32,8 @@ test_df <-
 # compute error value for each submission:
 d_error <- comp_error_submissions(path_to_submissions = subm_path)
 
-#write_rds(x = d_error, file = paste0(results_path,"d_error.rds"))
-d_error <- read_rds(file = paste0(results_path,"d_error.rds"))
+write_rds(x = d_error, file = paste0(results_path,"d_error.rds"))
+#d_error <- read_rds(file = paste0(results_path,"d_error.rds"))
 
 d_error2 <-
   d_error %>% 
@@ -41,7 +41,9 @@ d_error2 <-
 
 
 # grading sequence:
-mae_seq <- c(Inf, seq(from = 1.3, to = .5, length.out = 10), 0)
+# THIS LINE IS IMPORTANT! 
+# Here we decide which performance is "good" and which means "fail"
+mae_seq <- c(Inf, seq(from = 1.3, to = 1.1, length.out = 10), 0)
 
 
 d_grades <- 
@@ -64,6 +66,6 @@ d_grades <-
 #                                  1.3, 1))) %>% 
 #   mutate(grade = as.numeric(as.character(grade_f)))
 
-#write_csv(d_grades, file = paste0(results_path, "d_grades.rds"))
-#write_rds(d_grades, file = paste0(results_path, "d_grades.rds"))
+write_csv(d_grades, file = paste0(results_path, "d_grades.rds"))
+write_rds(d_grades, file = paste0(results_path, "d_grades.rds"))
 #d_grades <- read_rds(file = paste0(results_path, "d_grades.rds"))

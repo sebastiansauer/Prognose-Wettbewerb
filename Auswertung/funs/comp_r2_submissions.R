@@ -1,15 +1,21 @@
-comp_error_submissions <- function(path_to_submissions = "Submissions/", error_fun = mae) {
+comp_error_submissions <- function(path_to_submissions = "Submissions/", 
+                                   verbose = TRUE,
+                                   error_fun = mae) {
   
   source("funs/parse_names.R")
   source("funs/prep_csv.R")
   
+  if (verbose) cat("This is function `comp_error_submissions` speaking.\n")
+  
   # Parse submissions:
   submissions <- list.files(path = path_to_submissions,
                             full.names = FALSE,
-                            pattern = ".csv$",
+                            pattern = csv_types,
                             recursive = TRUE) 
   
   Encoding(submissions) <- "utf8"
+  
+  if (verbose) cat(paste0("Number of CSV files to be processed: ", length(submissions), "\n"))
   
   
   # parse names and Matrikelnummer to df:
@@ -52,6 +58,8 @@ comp_error_submissions <- function(path_to_submissions = "Submissions/", error_f
       .x = submissions,
       .f = ~ prep_csv(submission_file =  .x,
                       path_to_submissions = subm_path,
+                      path_to_test_data = solution_df_file,
+                      path_to_train_data = train_df_file,
                       verbose = TRUE)))
   
   
@@ -62,7 +70,7 @@ comp_error_submissions <- function(path_to_submissions = "Submissions/", error_f
                     ~error_fun(truth = y,
                          estimate = pred,
                          data = .x))) 
-  
+  # set `error_fun <- mae` during debugging!
   
   options(scipen = 4)
   d5 <-

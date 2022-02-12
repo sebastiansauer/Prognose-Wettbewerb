@@ -1,5 +1,6 @@
 
 library(gt)
+library(hrbrthemes)
 
 
 grades_file_path <- paste0(results_path, "d_grades.rds")
@@ -7,10 +8,17 @@ file.exists(grades_file_path)
 
 d_grades <- read_rds(file = grades_file_path)
 
+
+bestehensquote <- 
+  nrow(d_grades[d_grades$grade <= 4, ]) / nrow(d_grades) 
+
+bestehensquote
+
+
 grades_p_hist <- 
   d_grades %>% 
-  ggplot(aes(x = grade)) +
-  geom_histogram() +
+  ggplot(aes(x = grade_f)) +
+  geom_bar() +
   geom_vline(xintercept = mean(d_grades$grade),
              linetype = "dashed") +
   annotate("label", x = mean(d_grades$grade),
@@ -18,28 +26,31 @@ grades_p_hist <-
            label = paste0("MW: ", numform::round2(mean(d_grades$grade),
                                                   digits = 2))) +
   labs(title = "Notenverteilung QM1, SoSe 22",
-       caption = paste0("n = ", nrow(d_grades))) +
-  scale_x_continuous(breaks = grades_scheme)
-
+       caption = paste0("n = ", nrow(d_grades), "; Bestehensquote: ", round(bestehensquote, 2)),
+       x = "Notenstufen",
+       y = "Anzahl") +
+  #scale_x_continuous() +
+  scale_y_continuous(breaks = seq(0,15,5)) +
+  theme_ipsum_rc() 
 grades_p_hist
 
 ggsave(plot = grades_p_hist, 
-       filename = "figs/grades_p_hist.png")
+       filename = paste0(results_path, "/grades_p_hist.png"))
 
 
-grades_p_boxplot <- 
-  d_grades %>% 
-  ggplot(aes(x = 1, y = grade)) +
-  geom_boxplot() +
-  geom_jitter(width = 0.1, alpha = .2) +
-  scale_x_continuous(labels = NULL, guide = NULL) +
-  labs(title = "Notenverteilung QM1, SoSe 22",
-       caption = paste0("n = ", nrow(d_grades)))
-
-grades_p_boxplot
-
-ggsave(plot = grades_p_boxplot,
-       file = "figs/grades_p_boxplot.png")
+# grades_p_boxplot <- 
+#   d_grades %>% 
+#   ggplot(aes(x = 1, y = grade)) +
+#   geom_boxplot() +
+#   geom_jitter(width = 0.1, alpha = .2) +
+#   scale_x_continuous(labels = NULL, guide = NULL) +
+#   labs(title = "Notenverteilung QM1, SoSe 22",
+#        caption = paste0("n = ", nrow(d_grades)))
+# 
+# grades_p_boxplot
+# 
+# ggsave(plot = grades_p_boxplot,
+#        file = "figs/grades_p_boxplot.png")
 
 d_grades_sum <- 
   d_grades %>% 
