@@ -1,6 +1,8 @@
-get_names_from_submissions <- function (full_path_to, verbose = TRUE) {
+get_names_from_submissions <- function (path_of_submissions, verbose = TRUE) {
   
 
+  full_path_to <- paste0(here::here(), "/", path_of_submissions, "/")
+  
   
   # Get last names of each submission:
   

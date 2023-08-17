@@ -20,12 +20,12 @@ def_paths <- function() {
   
   path$results <- "Noten"  # ?
   
-  path$subm_proc <- "/submissions-processed"  # processed submissions
+  path$subm_proc <- "submissions-processed"  # processed submissions
   
   path$solution_df <- "Daten/d_control.csv"  # control data (with solution, y) for teacher
   
   # But no trailing slash to a file name:
-  path$train_df <- "Daten/d_train.csv"  # tran data
+  path$train_df <- "Daten/d_train.csv"  # train data
   
   path$notenliste_template <-  "Notenliste-leer.xlsx"  # template for grading list
   
