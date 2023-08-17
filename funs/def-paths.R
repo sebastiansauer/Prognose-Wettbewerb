@@ -16,18 +16,20 @@ def_paths <- function() {
   
   path$subm_raw <- "submissions-raw"  # raw, unprocessed submissions, from Moodle
   
-  path$subm_test <-  "submissions-test"  
+  path$subm_test <-  "submissions-test"  # test  data (without solution, y) for students
   
-  path$results <- "Noten"
+  path$results <- "Noten"  # ?
   
-  path$subm_proc <- "submissions-processed"  # processed submissions
+  path$subm_proc <- "/submissions-processed"  # processed submissions
   
-  path$solution_df <- "Daten/d_control.csv"
+  path$solution_df <- "Daten/d_control.csv"  # control data (with solution, y) for teacher
   
   # But no trailing slash to a file name:
-  path$train_df <- "Daten/d_train.csv"
+  path$train_df <- "Daten/d_train.csv"  # tran data
   
-  path$notenliste_template <-  "Notenliste-leer.xlsx"
+  path$notenliste_template <-  "Notenliste-leer.xlsx"  # template for grading list
+  
+  path$no_shows_file <- "Daten/no_shows.csv"
   
   
   # add absolute path:

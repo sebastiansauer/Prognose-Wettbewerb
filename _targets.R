@@ -1,26 +1,26 @@
 # QM1, 23-SoSe
 
-library(targets)
-library(tarchetypes)
-#library(tidyverse)
+library(targets)  
+library(tarchetypes)  # tar_files
+library(tidyverse)
 
 
+# source functions:
 funs_paths <- list.files(path = "funs",
                          full.names = TRUE,
                          pattern = ".R")
-# map(funs_paths, source)
-
-
-source("funs/def-paths.R")
-source("funs/diff-names.R")
-source("funs/parse-names-raw.R")
-source("funs/process-submissions.R")
+map(funs_paths, source)
 source("debugging.R")
 
+
+# set packages to be available for all targets:
 tar_option_set(packages = c("tidyverse"))
 
 
+# define target steps list:
 list(
+  
+  # define paths:
   tar_target(paths, def_paths()),
   tar_target(names_processed, process_submissions(paths)),
   tar_files(submissions_copied, 
@@ -49,7 +49,7 @@ list(
                                     start_id = 1),
              packages = "teachertools"),
   tar_target(grade_scheme, set_names(grades_thresholds$threshold, grades_thresholds$grade)),
-  tar_target(no_shows_file, "Daten/no_shows.csv", format = "file"),
+  tar_target(no_shows_file, paths$no_shows_file, format = "file"),
   tar_target(no_shows, read_csv(no_shows_file, col_types = "cccd")),
   tar_target(grades, assign_grade(performance_students, var = "error_value", grading_scheme = grade_scheme),
              packages = "teachertools"),
