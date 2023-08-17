@@ -45,6 +45,7 @@ d_error2 <-
 # Here we decide which performance is "good" and which means "fail"
 mae_seq <- c(Inf, seq(from = 1.3, to = 1.1, length.out = 10), 0)
 
+mae_seq
 
 d_grades <- 
   d_error2 %>% 

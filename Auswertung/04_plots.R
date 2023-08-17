@@ -1,5 +1,6 @@
 
 library(gt)
+library(tidyverse)
 library(hrbrthemes)
 
 
@@ -101,3 +102,32 @@ matching_r2_grades_gt <-
   gt()
 
 gtsave(matching_r2_grades_gt, file = "figs/matching_r2_grades_gt.png")
+
+
+
+
+
+# Zuordnung Note zu MAE-Mindestwert ---------------------------------------
+
+
+grades_scheme <- c(5, 4, 3.7, 3.3, 3.0, 2.7, 2.3, 2, 1.7, 1.3, 1) 
+mae_seq <- c(Inf, seq(from = 1.3, to = 1.1, length.out = 10))
+
+
+grades <- cut(x, breaks = breaks12, labels = grades_scheme)
+
+
+grade_thresholds <-
+  tibble( 
+    Note = grades_scheme,
+    Mindestwert_MAE = mae_seq)
+
+
+grade_thresholds <- 
+  gt(grade_thresholds) %>% 
+  fmt_number(2)
+
+
+gtsave(grade_thresholds, file = "figs/zuordnung-note-mae.png")
+
+
