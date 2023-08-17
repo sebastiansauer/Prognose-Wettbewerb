@@ -35,7 +35,7 @@ copy_submissions <- function (paths, verbose = TRUE) {
               overwrite = TRUE)
   stopifnot(copy_subm_files_succeeded)
   
-  if (verbose) cat(paste0(length(paths$subm_files_w_path), " submission files have been copied from raw folder to processed folder."))
+  if (verbose) cat(paste0(length(paths$subm_files_w_path), "\n Submission files have been copied from raw folder to processed folder.\n"))
   
   # list of copied files:
   submissions_copied <-

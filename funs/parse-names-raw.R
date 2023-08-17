@@ -1,7 +1,9 @@
 
 parse_names_raw <- function(path) {
   
-  # returns names and matrikelnummers of submissions files
+  #' parse students names
+  #' returns names and matrikelnummers of raw submissions files
+  #' @params path path to submissions raw file from moodle
   
   path_subm_files <- list.files(path = path$subm_raw,
                                 full.names = FALSE,
