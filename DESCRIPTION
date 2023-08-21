@@ -1,0 +1,25 @@
+Package: prediction-autograde
+Type: Package
+Title: Prediction contest automatic grading
+Version: 0.2.0.9000
+Authors@R: 
+    person("Sebastian", "Sauer", , "sebastiansauer1@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-1515-8348"))
+    person("Norman", "Markgraf", "nmarkgraf@sefiroth.de", role = "ctb")
+Description: Grades prediction submissions (similar to Kaggle competitions) 
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+LazyData: true
+RoxygenNote: 7.2.3
+Imports:
+    dplyr,
+    purrr,
+    targets,
+    tarchetypes,
+    readxl,
+    writexl
+Suggests: 
+    tidyverse
+VignetteBuilder: knitr
+License: MIT + file LICENSE
+Config/testthat/edition: 3

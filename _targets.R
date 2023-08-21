@@ -3,7 +3,6 @@
 library(targets)  
 library(tarchetypes)  # tar_files
 library(tidyverse)
-library(docstring)  # oxygen documentation in funs
 
 
 # source functions:
@@ -22,8 +21,9 @@ tar_option_set(packages = c("tidyverse"))
 list(
   
   # define paths:
-  tar_target(paths, def_paths()),
-  
+  tar_file(paths_file, "paths.yml"),
+  tar_target(paths, read_yaml(paths_file), packages = "yaml"),
+
   # watch raw submissions:
   tar_files(submissions_raw,
             list.files(
@@ -59,8 +59,8 @@ list(
   #                                   names_processed = names_processed)),
   
   # define thresholds for grades:
-  tar_target(grades_thesholds_file, "Daten/grades_thresholds.csv", format = "file"),
-  tar_target(grades_thresholds, read.csv(grades_thesholds_file)),
+  tar_file(grades_thesholds_file, paths$grades_thresholds),
+  tar_target(grades_thresholds, read_csv(grades_thesholds_file)),
   
   # compute model performance for all students:
   tar_target(performance_students, 
@@ -95,7 +95,7 @@ list(
                select(last_name, first_name, id, grade, bemerkung = error_value) %>% 
                mutate(bemerkung = round(bemerkung, 2)), packages = "dplyr"),
   tar_target(no_shows_added, notenliste |> bind_rows(no_shows)),
-  tar_target(notenliste_xslx, no_shows_added |> write_xlsx("notenliste.xlsx"),
+  tar_target(notenliste_xslx, no_shows_added |> write_xlsx(paste0(paths$exam_root, "/notenliste.xlsx")),
              packages = "writexl"),
   
   # plot distribution of grades:
@@ -104,12 +104,12 @@ list(
   
   # copy into university's grading document:
   tar_target(official_grading_list,
-             read_xlsx("grading-template.xlsx") |> 
+             read_xlsx(paste0(paths$exam_root, "/grading-template.xlsx")) |> 
                full_join(no_shows_added),
              packages = "readxl"),
   tar_target(official_grading_list_file,
              official_grading_list |> 
-               write_xlsx("grading_list_official.xlsx"),
+               write_xlsx(paste0(paths$exam_root, "/grading_list_official.xlsx")),
              packages = c("writexl"))
   
 )

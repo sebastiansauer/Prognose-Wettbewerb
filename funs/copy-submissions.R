@@ -17,7 +17,6 @@ copy_submissions <- function (paths, verbose = TRUE) {
   
   # if destination folder does not exist, create it:
   if (!(file.exists(paths$subm_proc))) {
-    if (verbose) cat("Creating folder for processed submissions")
     dir.create(paths$subm_proc)
   }
   
@@ -25,8 +24,14 @@ copy_submissions <- function (paths, verbose = TRUE) {
   full_path_from <- paste0(here::here(), "/", paths$subm_raw, "/")
   full_path_to <- paste0(here::here(), "/", paths$subm_proc, "/")
   
-  stopifnot(file.exists(full_path_from))
-  stopifnot(file.exists(full_path_to))
+  # stopifnot(file.exists(full_path_from))
+  # stopifnot(file.exists(full_path_to))
+  
+  
+  paths$subm_files_w_path <- list.files(path = paths$subm_raw,
+                                       full.names = TRUE,
+                                       pattern = paths$csv_pattern,
+                                       recursive = TRUE) 
   
   # copy:
   copy_subm_files_succeeded <- 
@@ -35,9 +40,8 @@ copy_submissions <- function (paths, verbose = TRUE) {
               overwrite = TRUE)
   stopifnot(copy_subm_files_succeeded)
   
-  if (verbose) cat(paste0(length(paths$subm_files_w_path), "\n Submission files have been copied from raw folder to processed folder.\n"))
-  
-  # list of copied files:
+
+  # return list of copied files:
   submissions_copied <-
     list.files(path = paths$subm_files_w_path,
              full.names = TRUE,

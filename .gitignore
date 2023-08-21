@@ -8,10 +8,13 @@
 debugging.R
 
 
-# sensitive data:
-submissions-*/
+# sensitive data, mostly student submission data:
+subm/
+subm*/
 *.xlsx
 *.xls
+exams/
+
 
 # targets (may include sensitive data):
 _targets/
