@@ -8,7 +8,7 @@ library(tidyverse)
 # source functions:
 funs_paths <- list.files(path = "funs",
                          full.names = TRUE,
-                         pattern = ".R")
+                         pattern = "\\.R")
 map(funs_paths, source)
 
 
@@ -101,11 +101,18 @@ list(
   # plot distribution of grades:
   tar_target(grades_plot, plot_grade_distribution(no_shows_added),
              packages = "teachertools"),
+  tar_target(error_plot,
+             no_shows_added |> 
+               select(error = bemerkung) |> 
+               ggdensity(x = "error", add = "mean", rug = TRUE, fill = "lightgrey"),
+             packages = "ggpubr"),
   
   # copy into university's grading document:
   tar_target(official_grading_list,
              read_xlsx(paste0(paths$exam_root, "/grading-template.xlsx")) |> 
-               full_join(no_shows_added),
+               mutate(id = as.character(id)) |> 
+               mutate(id = str_pad(id, width = 8, side = "left", pad = "0")) |> 
+               full_join(no_shows_added, by = "id"),
              packages = "readxl"),
   tar_target(official_grading_list_file,
              official_grading_list |> 

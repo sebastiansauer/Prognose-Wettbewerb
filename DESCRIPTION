@@ -19,6 +19,7 @@ Imports:
     readxl,
     writexl
 Suggests: 
+    testthat (>= 3.0.0),
     tidyverse
 VignetteBuilder: knitr
 License: MIT + file LICENSE

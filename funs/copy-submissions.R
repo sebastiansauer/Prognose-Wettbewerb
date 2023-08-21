@@ -13,8 +13,7 @@ copy_submissions <- function (paths, verbose = TRUE) {
                                 pattern = paths$csv_pattern,
                                 recursive = TRUE) 
   
-  if (verbose) cat(paste0("Number of raw submissions found: ", length(path_subm_files)))
-  
+
   # if destination folder does not exist, create it:
   if (!(file.exists(paths$subm_proc))) {
     dir.create(paths$subm_proc)
