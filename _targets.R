@@ -1,5 +1,3 @@
-# QM1, 23-SoSe
-
 library(targets)  
 library(tarchetypes)  # tar_files
 library(tidyverse)
@@ -21,7 +19,7 @@ tar_option_set(packages = c("tidyverse"))
 list(
   
   # define paths:
-  tar_file(paths_file, "paths.yml"),
+  tar_file(paths_file, "paths/paths-qm1-23-sose.yml"),  # enter here path of the current exam
   tar_target(paths, read_yaml(paths_file), packages = "yaml"),
 
   # watch raw submissions:
