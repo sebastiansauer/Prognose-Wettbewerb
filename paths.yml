@@ -9,3 +9,5 @@ train_df: "exams/ds1-2023-sose/data/d_train.csv"  # train data
 notenliste_template: "exams/ds1-2023-sose/Notenliste-leer.xlsx"  # template for grading list
 no_shows_file: "exams/ds1-2023-sose/data/no_shows.csv"  # list of students who did not show up for the examen or who did not submit an exa
 grades_thresholds: "exams/ds1-2023-sose/data/grades_thresholds.csv"
+name_outcome_variable: "count"
+

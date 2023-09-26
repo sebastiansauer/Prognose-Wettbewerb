@@ -69,7 +69,7 @@ list(
                                     error_fun = yardstick::rmse,
                                     verbose = TRUE,
                                     start_id = 1),
-             packages = "teachertools"),
+             packages = "teachertools"),  # from package "teachertools"
   
   # define grading schemes:
   tar_target(grade_scheme, 

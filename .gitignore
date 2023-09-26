@@ -15,6 +15,7 @@ subm*/
 *.xls
 exams/
 paths/
+Rplot*.*
 
 
 # targets (may include sensitive data):
