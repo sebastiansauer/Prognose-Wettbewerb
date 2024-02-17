@@ -8,7 +8,7 @@
 debugging.R
 
 
-# sensitive data, mostly student submission data:
+# sensitive data, mostly student submission data, including raw names:
 subm/
 subm*/
 *.xlsx
@@ -16,9 +16,12 @@ subm*/
 exams/
 paths/
 Rplot*.*
+_debug*/
 
 
-# targets (may include sensitive data):
+
+
+# targets (may include sensitive data, and can be large):
 _targets/
 
 
