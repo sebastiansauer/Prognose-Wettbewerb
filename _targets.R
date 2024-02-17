@@ -43,21 +43,14 @@ list(
                         pattern = paths$csv_pattern,
                         recursive = TRUE)),
   
-  # sanitize submissions files:
+  # sanitize submissions files in a loop:
   tar_target(submissions_prepped,
              submissions_copied |> 
                sanitize_csv(path_to_submissions = NULL) |> 
                write_csv(file = submissions_copied),
-             pattern = map(submissions_copied),
+             pattern = map(submissions_copied),  # loop through all submission files
              packages = "teachertools"),
 
-  # get student names and ids:
-  # tar_target(names_raw, parse_names_raw(paths)),
-  
-  # check if some names got lost (differences between Moodle and course list of students):
-  # tar_target(names_diff, diff_names(names_raw = names_raw, 
-  #                                   names_processed = names_processed)),
-  
   # define thresholds for grades:
   tar_file(grades_thresholds_file, paths$grades_thresholds),
   tar_target(grades_thresholds, read_csv(grades_thresholds_file)),
@@ -68,7 +61,7 @@ list(
                                     name_output_var = paths$name_outcome_variable,
                                     path_to_train_data = paths$train_df,
                                     path_to_test_data = paths$solution_df,
-                                    error_fun = if (paths$error == "rmse") yardstick::rmse,
+                                    error_fun = if (paths$error_fun == "rmse") yardstick::rmse,
                                     verbose = TRUE,
                                     start_id = 1),
              packages = "teachertools"),  # this fun is from the package "teachertools"
@@ -89,6 +82,8 @@ list(
              packages = "teachertools"),
   tar_target(grades_thresholds_plot, 
              ggtexttable(grades_thresholds, rows = NULL), packages = "ggpubr"),
+  tar_target(grades_thresholds_plot_disk,
+             grades_thresholds_plot |> ggsave(file = paste0(paths$exam_root, "Notenschwellen.png"))),
   
   # write grades to excel file:
   tar_target(notenliste, grades |> 
@@ -100,7 +95,7 @@ list(
              packages = "writexl"),
   
   # plot distribution of grades and errors:
-  tar_target(grades_plot, plot_grade_distribution(no_shows_added),
+  tar_target(grades_plot, plot_grade_distribution(notenliste),
              packages = "teachertools"),
   tar_target(grades_plot_png, 
              grades_plot |> ggsave(filename = paste0(paths$exam_root, "Notenverteilung.png"))),
@@ -110,7 +105,7 @@ list(
                ggdensity(x = "error", add = "mean", rug = TRUE, fill = "lightgrey"),
              packages = "ggpubr"),
   tar_target(error_plot_png,
-             error_plot |> ggsave(filename = paste0(paths$exam_root, "Notendichte.png"))),
+             error_plot |> ggsave(filename = paste0(paths$exam_root, "Fehlerverteilung.png"))),
   
   # copy into university's grading document, joining using id (Matrikelnummer):
   tar_target(official_grading_list,
