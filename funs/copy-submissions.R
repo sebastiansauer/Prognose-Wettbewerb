@@ -50,6 +50,4 @@ copy_submissions <- function (paths, submissions_raw, verbose = TRUE) {
              full.names = TRUE,
              pattern = paths$csv_pattern,
              recursive = TRUE)
-
- 
 }
