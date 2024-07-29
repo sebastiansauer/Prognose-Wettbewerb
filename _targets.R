@@ -18,8 +18,8 @@ tar_option_set(packages = c("tidyverse"))
 # define target steps list:
 list(
   
-  # define paths:
-  tar_file(paths_file, "exams/qm1-2023-wise/paths.yml"),  # enter here path of the current exam
+  # define paths, and watch the file for changes:
+  tar_file(paths_file, "exams/2024-sose-qm1/paths.yml"),  # enter here path of the current exam
   tar_target(paths, build_paths(paths_file), packages = "yaml"),
 
   # watch raw submissions:
@@ -61,10 +61,10 @@ list(
                                     name_output_var = paths$name_outcome_variable,
                                     path_to_train_data = paths$train_df,
                                     path_to_test_data = paths$solution_df,
-                                    error_fun = if (paths$error_fun == "rmse") yardstick::rmse,
+                                    error_fun = if (tolower(paths$error_fun) == "rmse") yardstick::rmse,
                                     verbose = TRUE,
                                     start_id = 1),
-             packages = "teachertools"),  # this fun is from the package "teachertools"
+             packages = "teachertools"),  # this fun comes from the package "teachertools"
   
   # define grading schemes:
   tar_target(grade_scheme, 
