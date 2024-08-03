@@ -66,18 +66,6 @@ list(
              pattern = map(submissions_copied),  # loop through all submission files
              packages = c("teachertools")),
 
-
-  # # compute model performance for all students:
-  # tar_target(performance_students, 
-  #            comp_error_submissions2(path_to_submissions = paths$subm_proc,
-  #                                   name_output_var = paths$name_outcome_variable,
-  #                                   #path_to_train_data = paths$train_df,
-  #                                   path_to_test_data = paths$solution_df,
-  #                                   error_fun = if (tolower(paths$error_fun) == "rmse") rmse,
-  #                                   verbose = TRUE,
-  #                                   start_id = 1),
-  #            packages = c("teachertools", "yardstick")),  # this fun comes from the package "teachertools"
-  
   # define grading schemes:
   tar_target(grade_scheme, 
              set_names(grades_thresholds$threshold, grades_thresholds$grade)),
