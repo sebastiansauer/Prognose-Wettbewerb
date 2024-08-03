@@ -19,8 +19,17 @@ tar_option_set(packages = c("tidyverse"))
 list(
   
   # define paths, and watch the file for changes:
-  tar_file(paths_file, "exams/2024-sose-qm1/paths.yml"),  # enter here path of the current exam
+  tar_file(paths_file, "exams/qm1-2024-sose/paths.yml"),  # enter here path of the current exam
   tar_target(paths, build_paths(paths_file), packages = "yaml"),
+  
+  # import solution data:
+  tar_file(solution_file, paths$solution_df),
+  tar_target(solution_df, read_csv(solution_file)),
+  
+  # define thresholds for grades:
+  tar_file(grades_thresholds_file, paths$grades_thresholds),
+  tar_target(grades_thresholds, read_csv(grades_thresholds_file)),
+  
 
   # watch raw submissions:
   tar_files(submissions_raw,
@@ -46,25 +55,28 @@ list(
   # sanitize submissions files in a loop:
   tar_target(submissions_prepped,
              submissions_copied |> 
-               sanitize_csv(path_to_submissions = NULL) |> 
-               write_csv(file = submissions_copied),
+               sanitize_pred_csv(paths$subm_proc,
+                                 filename_with_path = TRUE,
+                                 add_filename = TRUE,
+                                 alternative_name_for_pred = paths$name_outcome_variable) |> 
+               #write_csv(file = submissions_copied),
+               add_solution_col(solution_df, name_output_var = paths$name_outcome_variable) |> 
+               build_main_df() |> 
+               add_rmse_col(),
              pattern = map(submissions_copied),  # loop through all submission files
-             packages = "teachertools"),
+             packages = c("teachertools")),
 
-  # define thresholds for grades:
-  tar_file(grades_thresholds_file, paths$grades_thresholds),
-  tar_target(grades_thresholds, read_csv(grades_thresholds_file)),
-  
-  # compute model performance for all students:
-  tar_target(performance_students, 
-             comp_error_submissions(path_to_submissions = paths$subm_proc,
-                                    name_output_var = paths$name_outcome_variable,
-                                    path_to_train_data = paths$train_df,
-                                    path_to_test_data = paths$solution_df,
-                                    error_fun = if (tolower(paths$error_fun) == "rmse") yardstick::rmse,
-                                    verbose = TRUE,
-                                    start_id = 1),
-             packages = "teachertools"),  # this fun comes from the package "teachertools"
+
+  # # compute model performance for all students:
+  # tar_target(performance_students, 
+  #            comp_error_submissions2(path_to_submissions = paths$subm_proc,
+  #                                   name_output_var = paths$name_outcome_variable,
+  #                                   #path_to_train_data = paths$train_df,
+  #                                   path_to_test_data = paths$solution_df,
+  #                                   error_fun = if (tolower(paths$error_fun) == "rmse") rmse,
+  #                                   verbose = TRUE,
+  #                                   start_id = 1),
+  #            packages = c("teachertools", "yardstick")),  # this fun comes from the package "teachertools"
   
   # define grading schemes:
   tar_target(grade_scheme, 
@@ -76,14 +88,14 @@ list(
   
   # assign grades:
   tar_target(grades, 
-             assign_grade(performance_students, 
+             assign_grade(submissions_prepped, 
                           var = "error_value", 
                           grading_scheme = grade_scheme),
              packages = "teachertools"),
   tar_target(grades_thresholds_plot, 
              ggtexttable(grades_thresholds, rows = NULL), packages = "ggpubr"),
   tar_target(grades_thresholds_plot_disk,
-             grades_thresholds_plot |> ggsave(file = paste0(paths$exam_root, "Notenschwellen.png"))),
+             grades_thresholds_plot |> ggsave(file = paste0(paths$exam_root, "/Notenschwellen.png"))),
   
   # write grades to excel file:
   tar_target(notenliste, grades |> 
@@ -91,21 +103,21 @@ list(
                mutate(bemerkung = round(bemerkung, 2)), 
              packages = "dplyr"),
   tar_target(no_shows_added, notenliste |> bind_rows(no_shows)),
-  tar_target(notenliste_xslx, no_shows_added |> write_xlsx(paste0(paths$exam_root, "notenliste.xlsx")),
+  tar_target(notenliste_xslx, no_shows_added |> write_xlsx(paste0(paths$exam_root, "/notenliste.xlsx")),
              packages = "writexl"),
   
   # plot distribution of grades and errors:
   tar_target(grades_plot, plot_grade_distribution(notenliste),
              packages = "teachertools"),
   tar_target(grades_plot_png, 
-             grades_plot |> ggsave(filename = paste0(paths$exam_root, "Notenverteilung.png"))),
+             grades_plot |> ggsave(filename = paste0(paths$exam_root, "/Notenverteilung.png"))),
   tar_target(error_plot,
              no_shows_added |> 
                select(error = bemerkung) |> 
                ggdensity(x = "error", add = "mean", rug = TRUE, fill = "lightgrey"),
              packages = "ggpubr"),
   tar_target(error_plot_png,
-             error_plot |> ggsave(filename = paste0(paths$exam_root, "Fehlerverteilung.png"))),
+             error_plot |> ggsave(filename = paste0(paths$exam_root, "/Fehlerverteilung.png"))),
   
   # copy into university's grading document, joining using id (Matrikelnummer):
   tar_target(official_grading_list,
@@ -116,7 +128,7 @@ list(
              packages = "readxl"),
   tar_target(official_grading_list_file,
              official_grading_list |> 
-               write_xlsx(paste0(paths$exam_root, "grading_list_official.xlsx")),
+               write_xlsx(paste0(paths$exam_root, "/grading_list_official.xlsx")),
              packages = c("writexl"))
   
 )
