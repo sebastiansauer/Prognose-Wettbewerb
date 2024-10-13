@@ -40,7 +40,8 @@ copy_submissions <- function (paths, submissions_raw, verbose = TRUE) {
     file.copy(from = paths$subm_files_w_full_path, 
               to = full_path_to,
               overwrite = TRUE)
-  if (verbose) print("CSV submission files have been copied to destination folder.")
+  if (verbose) print(paste0("In total, ", length(submissions_raw), 
+                            " CSV submission files have been copied to destination folder."))
   stopifnot(copy_subm_files_succeeded)
   
 

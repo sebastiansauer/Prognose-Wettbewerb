@@ -19,7 +19,7 @@ tar_option_set(packages = c("tidyverse"))
 list(
   
   # define paths, and watch the file for changes:
-  tar_file(paths_file, "exams/qm1-2024-sose/paths.yml"),  # enter here path of the current exam
+  tar_file(paths_file, "exams/qm1-2024-sose-nachkorrektur/paths.yml"),  # enter here path of the current exam
   tar_target(paths, build_paths(paths_file), packages = "yaml"),
   
   # import solution data:
@@ -63,8 +63,18 @@ list(
                add_solution_col(solution_df, name_output_var = paths$name_outcome_variable) |> 
                build_main_df() |> 
                add_rmse_col(),
-             pattern = map(submissions_copied),  # loop through all submission files
-             packages = c("teachertools")),
+
+             pattern = map(submissions_copied), # loop through all submission files
+             
+             packages = c("teachertools")
+             ),
+  
+  # posthoc fixes and controls:
+  tar_target(add_id_seq_check,
+             submissions_prepped |>  
+               mutate(id_is_seq_1_to_n = map_lgl(data, function(df) identical(df$id, 1:88)))
+  ),
+  
 
   # define grading schemes:
   tar_target(grade_scheme, 
@@ -76,7 +86,7 @@ list(
   
   # assign grades:
   tar_target(grades, 
-             assign_grade(submissions_prepped, 
+             assign_grade(add_id_seq_check, 
                           var = "error_value", 
                           grading_scheme = grade_scheme),
              packages = "teachertools"),
@@ -91,7 +101,9 @@ list(
                mutate(bemerkung = round(bemerkung, 2)), 
              packages = "dplyr"),
   tar_target(no_shows_added, notenliste |> bind_rows(no_shows)),
-  tar_target(notenliste_xslx, no_shows_added |> write_xlsx(paste0(paths$exam_root, "/notenliste.xlsx")),
+  tar_target(notenliste_xslx, 
+             no_shows_added |> 
+               write_xlsx(path = paths$notenliste_temp_file),
              packages = "writexl"),
   
   # plot distribution of grades and errors:

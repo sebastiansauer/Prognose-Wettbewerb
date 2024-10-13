@@ -11,6 +11,7 @@ build_paths <- function(paths_file){
   paths$notenliste_template <- paste0(paths_raw$exam_root, "/", paths_raw$notenliste_template)
   paths$no_shows_file <- paste0(paths_raw$exam_root, "/", paths_raw$no_shows_file)
   paths$grades_thresholds <- paste0(paths_raw$exam_root, "/", paths_raw$grades_thresholds)
+  paths$notenliste_temp_file <- paste0(paths_raw$exam_root, "/", paths_raw$notenliste_temp_file)
   
   return(paths)
 }

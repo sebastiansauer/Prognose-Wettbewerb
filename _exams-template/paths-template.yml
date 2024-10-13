@@ -8,7 +8,6 @@ train_df: "data/d_train.csv"  # path to folder of train data
 notenliste_template: "grading-template.xlsx"  # template for grading list
 no_shows_file: "no_shows.csv"  # list of students who did not show up for the examen or who did not submit an exa
 grades_thresholds: "grades_thresholds.csv"
-name_outcome_variable: "Wert"
-error_fun: "rmse"
-
-
+name_outcome_variable: "Wert"  # variable to be predicted
+error_fun: "rmse"  # the individual value in this statistics yields the grade
+notenliste_temp_file: "notenliste-qm1-2024-sose-nachkorrektur.xlsx"  # intermediate grades file
